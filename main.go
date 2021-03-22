@@ -1,17 +1,24 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"log"
+	"SurveyAppAPI/users"
+	"fmt"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello, World!",
-		})
-	})
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 
-	log.Fatal(r.Run(":8080"))
+	if err != nil {
+		panic(err)
+	}
+
+	_ = db.AutoMigrate(&users.User{})
+
+	var user1 users.User
+
+	db.First(&user1, 1)
+
+	fmt.Println(user1.Email)
 }
