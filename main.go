@@ -8,8 +8,10 @@ import (
 )
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 
+	users.Users()
+
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -20,5 +22,7 @@ func main() {
 
 	db.First(&user1, 1)
 
-	fmt.Println(user1.Email)
+	db.Model(&user1).Update("Email", "TestEmail@testing.com")
+
+	fmt.Printf("%+v\n", user1)
 }
