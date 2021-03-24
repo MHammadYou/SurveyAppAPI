@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/go,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=go,pycharm+all
 
+
+*.db
+
+
 ### Go ###
 # Binaries for programs and plugins
 *.exe

@@ -2,24 +2,14 @@ package users
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 )
 
-var r = gin.Default()
+func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
-func Users() {
-	r.GET("/users", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Yo",
-		})
-	})
-
-	r.POST("/users", func(c *gin.Context) {
-		c.JSON(200, gin.H {
-			"message": "Post Request",
-		})
-	})
-
+	r.GET("/users", handleGet)
+	r.POST("/users", handlePost)
 
 	log.Fatal(r.Run(":8000"))
 }
