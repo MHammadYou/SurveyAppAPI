@@ -3,11 +3,12 @@ package users
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
 )
 
-type Signup struct {
+type userInterface struct {
 	Email string
 	Password string
 }
@@ -46,10 +47,17 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
 	r.POST("/users", func (c *gin.Context) {
 
-		var newUser Signup
+		var newUser userInterface
 		_ = c.Bind(&newUser)
 
-		db.Create(&User{Email: newUser.Email, Password: newUser.Password})
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+		if err != nil { panic(err) }
+
+		//auth := bcrypt.CompareHashAndPassword(hashPass, []byte("fakePassword"))
+		//
+		//fmt.Println(auth)
+
+		db.Create(&User{Email: newUser.Email, Password: string(hashPass)})
 
 		c.JSON(200, gin.H {
 			"message": "User created for " + newUser.Email,
@@ -74,7 +82,7 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
 		id := c.Param("id")
 
-		var newUser Signup
+		var newUser userInterface
 		_ = c.Bind(&newUser)
 
 		db.First(&user, id)
@@ -85,5 +93,36 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 		})
 	})
 
+	r.POST("/login", func(c *gin.Context) {
+		var loginData userInterface
+		var user User
+
+		err := c.Bind(&loginData)
+		if err != nil { panic(err) }
+
+		db.First(&user, "Email = ?", loginData.Email)
+
+		if user.ID != 0 {
+			login(loginData, user)
+		} else {
+			c.JSON(404, gin.H {
+				"message": "No user exists with this email",
+			})
+		}
+
+	})
+
 	log.Fatal(r.Run(":8000"))
+}
+
+
+func login(loginData userInterface, user User) {
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginData.Password))
+	if err == nil {
+		fmt.Println("Login Successful")
+	} else {
+		fmt.Println(err)
+	}
+
 }
