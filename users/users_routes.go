@@ -53,10 +53,6 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 		hashPass, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 		if err != nil { panic(err) }
 
-		//auth := bcrypt.CompareHashAndPassword(hashPass, []byte("fakePassword"))
-		//
-		//fmt.Println(auth)
-
 		db.Create(&User{Email: newUser.Email, Password: string(hashPass)})
 
 		c.JSON(200, gin.H {
