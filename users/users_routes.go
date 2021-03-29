@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
 )
 
 type userInterface struct {
@@ -19,11 +18,10 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
 		var users []User
 
-		result := db.Find(&users)
-		fmt.Println(result)
+		db.Find(&users)
 
 		c.JSON(200, gin.H{
-			"message": users,
+			"users": users,
 		})
 	})
 
@@ -35,7 +33,7 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
 		if user.ID != 0 {
 			c.JSON(200, gin.H {
-				"id": user,
+				"user": user,
 			})
 		} else {
 			c.JSON(404, gin.H {
@@ -108,7 +106,6 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 
 	})
 
-	log.Fatal(r.Run(":8000"))
 }
 
 
