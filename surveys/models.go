@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type Survey struct {
 	gorm.Model
-	Title string
-	Question string
-	Answer string
+	Title string `json:"title"`
+	Question string `json:"question"`
+	Answer string `json:"answer"`
 }
 

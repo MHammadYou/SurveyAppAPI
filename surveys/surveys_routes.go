@@ -5,6 +5,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type surveyInterface struct {
+	Title string
+	Question string
+	Answer string
+}
+
 func HandleSurveysRoutes(db *gorm.DB, r *gin.Engine) {
 
 	r.GET("/surveys/", func(c *gin.Context) {
@@ -33,6 +39,19 @@ func HandleSurveysRoutes(db *gorm.DB, r *gin.Engine) {
 				"message": "No such survey",
 			})
 		}
+	})
+	
+	r.POST("/surveys", func (c *gin.Context) {
+
+		var newSurvey surveyInterface
+		_ = c.Bind(&newSurvey)
+
+		db.Create(&Survey{Title: newSurvey.Title, Question: newSurvey.Question, Answer: newSurvey.Answer})
+
+		c.JSON(200, gin.H {
+			"message": "New User Created!",
+		})
+
 	})
 
 }
