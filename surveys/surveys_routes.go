@@ -40,7 +40,7 @@ func HandleSurveysRoutes(db *gorm.DB, r *gin.Engine) {
 			})
 		}
 	})
-	
+
 	r.POST("/surveys", func (c *gin.Context) {
 
 		var newSurvey surveyInterface
