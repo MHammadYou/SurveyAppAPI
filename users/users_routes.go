@@ -79,8 +79,11 @@ func HandleUserRoutes(db *gorm.DB, r *gin.Engine) {
 		var newUser userInterface
 		_ = c.Bind(&newUser)
 
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+		if err != nil { panic(err) }
+
 		db.First(&user, id)
-		db.Model(&user).Updates(User{Email: newUser.Email, Password: newUser.Password})
+		db.Model(&user).Updates(User{Email: newUser.Email, Password: string(hashPass)})
 
 		c.JSON(200, gin.H {
 			"message": "Updated",

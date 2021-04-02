@@ -54,7 +54,7 @@ func HandleSurveysRoutes(db *gorm.DB, r *gin.Engine) {
 
 	})
 
-	r.DELETE("/surveys", func (c *gin.Context) {
+	r.DELETE("/surveys/:id", func (c *gin.Context) {
 		var survey Survey
 
 		id := c.Param("id")
@@ -64,6 +64,22 @@ func HandleSurveysRoutes(db *gorm.DB, r *gin.Engine) {
 
 		c.JSON(200, gin.H {
 			"message": "Survey Deleted",
+		})
+	})
+
+	r.PUT("/surveys/:id", func (c *gin.Context) {
+		var survey Survey
+
+		id := c.Param("id")
+
+		var newSurvey surveyInterface
+		_ = c.Bind(&newSurvey)
+
+		db.First(&survey, id)
+		db.Model(&survey).Updates(Survey{Title: newSurvey.Title, Question: newSurvey.Question, Answer: newSurvey.Answer})
+
+		c.JSON(200, gin.H {
+			"message": "Updated",
 		})
 	})
 
