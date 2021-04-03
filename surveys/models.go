@@ -7,5 +7,6 @@ type Survey struct {
 	Title string `json:"title"`
 	Question string `json:"question"`
 	Answer string `json:"answer"`
+	AuthorID uint `json:"author_id"`
 }
 
